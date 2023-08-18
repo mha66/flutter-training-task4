@@ -7,7 +7,7 @@ class TextAndFormField extends StatelessWidget {
   final String? hintText;
   final bool obscureText;
   final Widget? suffixIcon;
-
+  final TextInputType? keyboardType;
   const TextAndFormField(
       {super.key,
       required this.text,
@@ -15,7 +15,7 @@ class TextAndFormField extends StatelessWidget {
       this.validator,
       this.hintText,
       this.obscureText = false,
-      this.suffixIcon});
+      this.suffixIcon, this.keyboardType});
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +31,7 @@ class TextAndFormField extends StatelessWidget {
           controller: controller,
           validator: validator,
           obscureText: obscureText,
+          keyboardType: keyboardType,
           style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w500,

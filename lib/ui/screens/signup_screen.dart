@@ -139,10 +139,9 @@ class _CreateAccountState extends State<CreateAccountPage> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Password must be filled';
-                      } else if(value.length < 8) {
+                      } else if (value.length < 8) {
                         return 'Password must be at least 8 characters';
-                      } else if(!value.contains(RegExp(r'(\d+)')))
-                      {
+                      } else if (!value.contains(RegExp(r'(\d+)'))) {
                         return 'Password must contain digits';
                       }
                       return null;
@@ -152,23 +151,25 @@ class _CreateAccountState extends State<CreateAccountPage> {
                           togglePasswordVisibility();
                         },
                         splashRadius: 1,
-                        icon:  obscurePassword
+                        icon: obscurePassword
                             ? const Icon(Icons.visibility_off,
-                            color: Color(0xFF330707))
+                                color: Color(0xFF330707))
                             : const Icon(
-                          Icons.visibility,
-                          color: Colors.blue,
-                        )),
+                                Icons.visibility,
+                                color: Colors.blue,
+                              )),
                   ),
                   const SizedBox(height: 20),
                   TextAndFormField(
                     text: 'Phone',
                     controller: phoneC,
+                    keyboardType: const TextInputType.numberWithOptions(
+                        signed: false, decimal: false),
                     hintText: 'Phone Number',
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Phone must be filled';
-                      } else if(value.length < 11) {
+                      } else if (value.length < 11) {
                         return 'Phone number must be at least 11 digits';
                       }
                       return null;

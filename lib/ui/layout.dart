@@ -64,7 +64,7 @@ class _LayoutState extends State<Layout> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          content: const Text('Exit ?'),
+                          content: const Text('Log out ?'),
                           actions: [
                             TextButton(
                                 onPressed: () async {
