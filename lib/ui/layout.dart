@@ -1,11 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:task4/ui/screens/counter_page.dart';
 import 'package:task4/ui/screens/favourites_drawer.dart';
 import 'package:task4/ui/screens/home_page.dart';
+import 'package:task4/ui/screens/login_screen.dart';
 
 import '../data/data_source/data_source.dart';
-import '../data/models/product_data.dart';
+import 'screens/profile_page.dart';
 
 class Layout extends StatefulWidget {
   const Layout({super.key});
@@ -15,28 +16,25 @@ class Layout extends StatefulWidget {
 }
 
 class _LayoutState extends State<Layout> {
-  List<Widget> screens = const [MyHomePage(), CounterPage()];
+  List<Widget> screens = const [MyHomePage(), CounterPage(), Profile()];
   int currentIndex = 0;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  Future<bool> signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      DataSource.isLoadingProfile = true;
+      return true;
+    } catch (error) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error.toString())));
+      return false;
+    }
+  }
 
   void getPage(int index) {
     setState(() {
       currentIndex = index;
-    });
-  }
-
-  List<Product> favouriteList = [];
-
-  void getFavourites() {
-    setState(() {
-      if (favouriteList.isNotEmpty) {
-        favouriteList.clear();
-      }
-      for (var item in DataSource.productList) {
-        if (item.isFavourite) {
-          favouriteList.add(item);
-        }
-      }
     });
   }
 
@@ -50,12 +48,15 @@ class _LayoutState extends State<Layout> {
           leading: IconButton(
             onPressed: () {
               _scaffoldKey.currentState!.openDrawer();
-              getFavourites();
             },
             icon: const Icon(Icons.list),
           ),
           centerTitle: true,
-          title: currentIndex == 0 ? const Text('Shop') : const Text('Calculator'),
+          title: currentIndex == 0
+              ? const Text('Shop')
+              : currentIndex == 1
+                  ? const Text('Calculator')
+                  : const Text('Profile'),
           actions: [
             IconButton(
                 onPressed: () {
@@ -66,8 +67,16 @@ class _LayoutState extends State<Layout> {
                           content: const Text('Exit ?'),
                           actions: [
                             TextButton(
-                                onPressed: () {
-                                  SystemNavigator.pop();
+                                onPressed: () async {
+                                  await signOut().then((value) {
+                                    if (value) {
+                                      Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const LoginPage()));
+                                    }
+                                  });
                                 },
                                 child: const Text('Yes')),
                             TextButton(
@@ -82,7 +91,7 @@ class _LayoutState extends State<Layout> {
                 icon: const Icon(Icons.exit_to_app))
           ],
         ),
-        drawer: FavouritesDrawer(favouriteList: favouriteList),
+        drawer: FavouritesDrawer(favouriteList: DataSource.favouriteList),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: currentIndex,
           backgroundColor: const Color(0xff432c2c),
@@ -108,6 +117,13 @@ class _LayoutState extends State<Layout> {
                 size: 40,
               ),
               label: 'Counter',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.person,
+                size: 40,
+              ),
+              label: 'Profile',
             ),
           ],
         ),

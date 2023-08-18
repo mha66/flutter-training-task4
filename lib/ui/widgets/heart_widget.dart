@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:task4/data/data_source/data_source.dart';
 
 import '../../data/models/product_data.dart';
 
@@ -13,11 +14,15 @@ class Heart extends StatefulWidget {
 }
 
 class _HeartState extends State<Heart> {
-  //bool favourite = false;
   void heartPressed() {
     setState(() {
       widget.product.isFavourite = !widget.product.isFavourite;
-      //favourite = !favourite;
+      if (widget.product.isFavourite) {
+        DataSource.favouriteList.add(widget.product);
+      } else {
+        DataSource.favouriteList
+            .removeWhere((item) => item.id == widget.product.id);
+      }
     });
   }
 

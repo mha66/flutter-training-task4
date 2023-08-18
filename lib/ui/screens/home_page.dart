@@ -64,8 +64,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       },
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        // childAspectRatio: MediaQuery.of(context).size.width /
-                        //     ((MediaQuery.of(context).size.height)-350),
                         mainAxisExtent: 205,
                         crossAxisSpacing: 10,
                         crossAxisCount: 2,
