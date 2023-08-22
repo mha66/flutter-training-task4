@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../data/data_source/data_source.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:task4/cubit/app_cubit.dart';
 import '../../data/models/product_data.dart';
 
 class FavouritesDrawer extends StatelessWidget {
@@ -12,29 +13,34 @@ class FavouritesDrawer extends StatelessWidget {
     return Drawer(
         child: Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Favourites',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 23,
-            ),
-          ),
-          const SizedBox(height: 20),
-          DataSource.isLoading
-              ? const Text('Loading....')
-              : favouriteList.isEmpty
-                  ? const Text('No favourites')
-                  : Expanded(
-                      child: ListView.builder(
-                          itemCount: favouriteList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return FavouriteItem(item: favouriteList[index]);
-                          }),
-                    )
-        ],
+      child: BlocBuilder<AppCubitA, AppStateA>(
+        builder: (context, state) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Favourites',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 23,
+                ),
+              ),
+              const SizedBox(height: 20),
+              state is ProductsLoadingState
+                  ? const Text('Loading....')
+                  : favouriteList.isEmpty
+                      ? const Text('No favourites')
+                      : Expanded(
+                          child: ListView.builder(
+                              itemCount: favouriteList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return FavouriteItem(
+                                    item: favouriteList[index]);
+                              }),
+                        )
+            ],
+          );
+        },
       ),
     ));
   }

@@ -1,28 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:task4/cubit/app_cubit.dart';
 
-int sum = 0;
 TextEditingController input1Controller = TextEditingController();
 TextEditingController input2Controller = TextEditingController();
 
-class CounterPage extends StatefulWidget {
+class CounterPage extends StatelessWidget {
   const CounterPage({super.key});
-
-  @override
-  State<CounterPage> createState() => _CounterPageState();
-}
-
-class _CounterPageState extends State<CounterPage> {
-  void getSum() {
-    setState(() {
-      sum = int.parse(input1Controller.text) + int.parse(input2Controller.text);
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,12 +27,16 @@ class _CounterPageState extends State<CounterPage> {
               )),
         ),
         const SizedBox(height: 125),
-        Text(
-          'sum = ${sum.toString()}',
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 16,
-          ),
+        BlocBuilder<AppCubitA, AppStateA>(
+          builder: (context, state) {
+            return Text(
+              'sum = ${context.read<AppCubitA>().sum.toString()}',
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+              ),
+            );
+          },
         ),
         const SizedBox(height: 30),
         Padding(
@@ -92,20 +81,26 @@ class _CounterPageState extends State<CounterPage> {
           ),
         ),
         const SizedBox(height: 30),
-        ElevatedButton(
-            onPressed: () {
-              getSum();
-            },
-            style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF330707),
-                minimumSize: const Size(120, 40),
-                shape: ContinuousRectangleBorder(
-                    borderRadius: BorderRadius.circular(5))),
-            child: const Text(
-              'get sum',
-              style:
-                  TextStyle(fontFamily: 'Times', fontWeight: FontWeight.bold),
-            ))
+        BlocBuilder<AppCubitA, AppStateA>(
+          builder: (context, state) {
+            return ElevatedButton(
+                onPressed: () {
+                  context.read<AppCubitA>().getSum(
+                      int.parse(input1Controller.text),
+                      int.parse(input2Controller.text));
+                },
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF330707),
+                    minimumSize: const Size(120, 40),
+                    shape: ContinuousRectangleBorder(
+                        borderRadius: BorderRadius.circular(5))),
+                child: const Text(
+                  'get sum',
+                  style: TextStyle(
+                      fontFamily: 'Times', fontWeight: FontWeight.bold),
+                ));
+          },
+        )
       ],
     );
   }
